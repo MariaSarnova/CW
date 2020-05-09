@@ -14,7 +14,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     enumProcess();
     connect(this,&Widget::refreshProcTab,this,&Widget::enumProcess);
-    // 进程提权
+    //
     ui->processTab->setColumnWidth(0,100);
     ui->dllTab->setColumnWidth(0,100);
     ui->dllTab->setColumnWidth(1,200);
@@ -27,7 +27,7 @@ uint Widget::getPid()
     return pid;
 }
 
-// 清空进程表
+// 
 void Widget::clearProcTab()
 {
     int rowCount = ui->processTab->rowCount();
@@ -36,7 +36,7 @@ void Widget::clearProcTab()
         ui->processTab->removeRow(0);
     }
 }
-// 清空DLL表
+// 
 void Widget::clearDLLTab()
 {
     int rowCount = ui->dllTab->rowCount();
@@ -46,7 +46,7 @@ void Widget::clearDLLTab()
     }
 }
 
-// 枚举进程
+// 
 void Widget::enumProcess()
 {
     clearProcTab();
@@ -59,7 +59,7 @@ void Widget::enumProcess()
     }
 
     PROCESSENTRY32 entry = {0};
-    entry.dwSize = sizeof(entry);// 长度必须赋值
+    entry.dwSize = sizeof(entry);//
     BOOL ret = Process32First(snapHandele,&entry);
     int i = 0;
     while (ret) {
@@ -79,14 +79,11 @@ Widget::~Widget()
 
 void Widget::on_pushButton_5_clicked()
 {
-    // 退出
+    // 
     this->close();
 }
 
-// 提升当前进程权限至SeDebugPrivilege
-// 笔者在win10中没有提权成功！
 
-// 创建进程
 void Widget::on_pushButton_6_clicked()
 {
 
@@ -113,7 +110,7 @@ void Widget::on_pushButton_6_clicked()
     startInfo.cb = sizeof(startInfo);
     PROCESS_INFORMATION processInfo;
     ZeroMemory( &processInfo, sizeof(processInfo) );
-    // startInfo 和 processInfo必须初始化
+    
     BOOL ret = CreateProcessA(NULL,(LPSTR)path,NULL,NULL,false,NULL
                   ,NULL,NULL,&startInfo,&processInfo);
     if( ret )
@@ -129,20 +126,20 @@ void Widget::on_pushButton_6_clicked()
 
 }
 
-// 结束进程
+
 void Widget::on_pushButton_clicked()
 {
 
     int row = ui->processTab->currentRow();
     uint pid = getPid();
 
-    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS,FALSE,pid); // 获取进程句柄
+    HANDLE hProc = OpenProcess(PROCESS_ALL_ACCESS,FALSE,pid);
     if( hProc == NULL)
     {
         qDebug() << "OpenProcess error ";
         return;
     }
-    BOOL ret = TerminateProcess(hProc,0); // 强制进程退出
+    BOOL ret = TerminateProcess(hProc,0); 
     if(ret == FALSE)
     {
         qDebug() << "TerminateProcess error ";
@@ -152,7 +149,7 @@ void Widget::on_pushButton_clicked()
     CloseHandle(hProc);
 }
 
-// 停止进程，就是将进程中的所有线程挂起
+
 void Widget::on_pushButton_2_clicked()
 {
     uint pid = getPid();
@@ -193,7 +190,7 @@ void Widget::on_pushButton_2_clicked()
     CloseHandle(snapHandele);
 }
 
- // 恢复进程，就是将进程中的所有线程恢复
+ 
 void Widget::on_pushButton_3_clicked()
 {
     uint pid = getPid();
@@ -233,13 +230,10 @@ void Widget::on_pushButton_3_clicked()
     }
 }
 
-// 查看进程的DLL
-// 查看某些系统进程的DLL是不行的，调用CreateToolhelp32Snapshot直接失败
-// 必须提权，提权操作在upRole函数中
 
 void Widget::on_pushButton_7_clicked()
 {
-    // 刷新进程表
+    
     clearDLLTab();
     enumProcess();
 }
