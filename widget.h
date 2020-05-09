@@ -15,19 +15,19 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 private:
-    // 枚举进程
+    // 
     void enumProcess();
-    // 获取进程表选中的进程ID
+    //
     uint getPid();
-    // 提升权限
+    // 
 
 
-    // 清空进程表
+    //
     void clearProcTab();
-    // 清空DLL表
+    // 
     void clearDLLTab();
 signals:
-    // 刷新进程表
+    // 
     void refreshProcTab();
 private slots:
     void on_pushButton_5_clicked();
